@@ -43,5 +43,6 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v7
         with:
+          context: "postgres-appliance/"
           push: true
           tags: ${{ steps.image.outputs.NAME }}
