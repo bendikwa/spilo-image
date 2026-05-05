@@ -3,7 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "ignoreDeps": [],
   "labels": ["dependencies"],
-  "pinDigests": true,
+  "pinDigests": true
 }
