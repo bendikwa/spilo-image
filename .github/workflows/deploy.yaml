@@ -6,7 +6,7 @@ on:
   push:
     branches: [ main ]
     paths:
-      - /.github/workflows/deploy.yml
+      - '.github/workflows/deploy.yaml'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
