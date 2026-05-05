@@ -32,8 +32,9 @@ jobs:
         id: image
         working-directory: postgres-appliance
         run: |
+          VERSION=$(git describe --tags --always --dirty)
           PGVERSION=$(sed -n 's/^ARG PGVERSION=\([1-9][0-9]*\).*$/\1/p' Dockerfile)
-          IMAGE="ghcr.io/bendikwa/spilo-$PGVERSION:${GITHUB_REF/refs\/tags\//}"
+          IMAGE="ghcr.io/bendikwa/spilo-$PGVERSION:$VERSION"
           echo "NAME=$IMAGE" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
