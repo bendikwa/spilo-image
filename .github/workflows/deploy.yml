@@ -7,12 +7,12 @@ on:
     branches: [ main ]
     paths-ignore:
       - 'README.md'
-      - /.github/renovate.json'
+      - /.github/workflows/renovate.yaml'
   pull_request:
     branches: [ main ]
     paths-ignore:
       - 'README.md'
-      - /.github/renovate.json'
+      - /.github/workflows/renovate.yaml'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
