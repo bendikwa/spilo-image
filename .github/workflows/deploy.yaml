@@ -13,31 +13,34 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Checkout remote
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           repository: zalando/spilo
           ref: 4.0-p3
 
-      - name: Become one with the container registry
+      - name: Registry login
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Derive spilo image name
+        id: image
+        working-directory: postgres-appliance
         run: |
-          # This version gets updated when spilo adds support for a new postgres version
-          APP_NAME=spilo-17
-          VERSION=$(git describe --tags --always --dirty)
-          IMAGE_BASE=ghcr.io/bendikwa/$APP_NAME
-          IMAGE_NAME=$IMAGE_BASE:$VERSION
-          LATEST=$IMAGE_BASE:latest
+          PGVERSION=$(sed -n 's/^ARG PGVERSION=\([1-9][0-9]*\).*$/\1/p' Dockerfile)
+          IMAGE="ghcr.io/bendikwa/spilo-$PGVERSION:${GITHUB_REF/refs\/tags\//}"
+          echo "NAME=$IMAGE" >> $GITHUB_OUTPUT
 
-          docker build -t $IMAGE_NAME --build-arg ADDITIONAL_LOCALES="nb_NO en_GB" --build-arg TIMESCALEDB_APACHE_ONLY=false postgres-appliance
-          docker tag $IMAGE_NAME $LATEST
-
-          docker push $IMAGE_NAME
-          docker push $LATEST
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+        
+      - name: Build and push image
+        uses: docker/build-push-action@v7
+        with:
+          push: true
+          tags: ${{ steps.image.outputs.NAME }}
