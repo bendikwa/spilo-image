@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           repository: zalando/spilo
-          ref: 4.0-p2
+          ref: 4.1-p2
 
       - name: Registry login
         uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
